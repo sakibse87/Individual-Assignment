@@ -6,21 +6,25 @@ const menuDisplay = document.getElementById('menuDisplay');
 let selectedRestaurantId = '';
 let currentMenuType = 'daily';
 
+// Metropolia Course REST API Base URL
+const API_BASE = 'https://10.120.32.94/restaurant/api/v1';
+
 function loadRestaurants() {
-  fetch('https://10.120.32.94/restaurant/api/v1/restaurants')
+  fetch(API_BASE + '/restaurants')
     .then(function(response) {
       return response.json();
     })
     .then(function(restaurants) {
+      selectElement.innerHTML = '<option value="">-- Choose a restaurant --</option>';
       for (let i = 0; i < restaurants.length; i++) {
         const option = document.createElement('option');
-        option.value = restaurants[i]._id;
+        option.value = restaurants[i]._id || restaurants[i].id;
         option.textContent = restaurants[i].name;
         selectElement.appendChild(option);
       }
     })
     .catch(function(error) {
-      menuDisplay.innerHTML = '<p>Error loading restaurants.</p>';
+      menuDisplay.innerHTML = '<p>Error loading restaurants. Make sure you are on Metropolia network/VPN and SSL warning is bypassed.</p>';
     });
 }
 
@@ -32,9 +36,9 @@ function loadMenu() {
 
   let url = '';
   if (currentMenuType === 'daily') {
-    url = 'https://10.120.32.94/restaurant/api/v1/restaurants/daily/' + selectedRestaurantId + '/fi';
+    url = API_BASE + '/restaurants/daily/' + selectedRestaurantId + '/fi';
   } else {
-    url = 'https://10.120.32.94/restaurant/api/v1/restaurants/weekly/' + selectedRestaurantId + '/fi';
+    url = API_BASE + '/restaurants/weekly/' + selectedRestaurantId + '/fi';
   }
 
   fetch(url)
